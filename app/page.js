@@ -8,6 +8,31 @@ export default function Home() {
   const [password, setPassword] = useState("");
 
   const signUp = async () => {
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+  });
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  const user = data.user;
+
+  if (user) {
+    await supabase.from("profiles").insert([
+      {
+        id: user.id,
+        email: user.email,
+        xp: 0,
+        level: 1,
+      },
+    ]);
+  }
+
+  alert("Cuenta creada y perfil inicializado");
+};
     const { error } = await supabase.auth.signUp({
       email,
       password,
