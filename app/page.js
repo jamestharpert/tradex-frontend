@@ -8,23 +8,7 @@ export default function Home() {
   const [password, setPassword] = useState("");
   const [modules, setModules] = useState([]);
 
-  // Cargar módulos al iniciar
-  useEffect(() => {
-    const loadModules = async () => {
-      const { data, error } = await supabase
-        .from("modules")
-        .select("*")
-        .order("order", { ascending: true });
-
-      if (!error && data) {
-        setModules(data);
-      }
-    };
-
-    loadModules();
-  }, []);
-
-  // Registro de usuario + creación de perfil
+  // 🔹 Registro + creación de perfil
   const signUp = async () => {
     const { data, error } = await supabase.auth.signUp({
       email,
@@ -52,31 +36,61 @@ export default function Home() {
     alert("Cuenta creada y perfil inicializado");
   };
 
+  // 🔹 Cargar módulos desde Supabase
+  useEffect(() => {
+    const loadModules = async () => {
+      const { data, error } = await supabase
+        .from("modules")
+        .select("*")
+        .order("order", { ascending: true });
+
+      if (!error) {
+        setModules(data);
+      }
+    };
+
+    loadModules();
+  }, []);
+
   return (
     <div
       style={{
         minHeight: "100vh",
-        padding: "40px",
         background: "#0a0f1c",
         color: "white",
+        padding: "60px",
         fontFamily: "Arial, sans-serif",
       }}
     >
-      <h1 style={{ fontSize: "42px" }}>TradeX Academy</h1>
-      <p>Aprende trading de forma profesional.</p>
+      <h1 style={{ fontSize: "42px", marginBottom: "10px" }}>
+        TradeX Academy
+      </h1>
+      <p style={{ opacity: 0.7 }}>
+        Aprende trading de forma profesional y estructurada.
+      </p>
 
-      {/* REGISTRO */}
-      <div style={{ marginTop: "40px" }}>
-        <h2>Crear cuenta</h2>
+      {/* 🔹 Registro */}
+      <div
+        style={{
+          marginTop: "50px",
+          padding: "30px",
+          background: "#111827",
+          borderRadius: "12px",
+          maxWidth: "400px",
+        }}
+      >
+        <h2 style={{ marginBottom: "20px" }}>Crear Cuenta</h2>
 
         <input
           placeholder="Email"
           onChange={(e) => setEmail(e.target.value)}
           style={{
             display: "block",
-            marginBottom: "10px",
+            width: "100%",
+            marginBottom: "15px",
             padding: "10px",
-            width: "300px",
+            borderRadius: "6px",
+            border: "none",
           }}
         />
 
@@ -86,47 +100,53 @@ export default function Home() {
           onChange={(e) => setPassword(e.target.value)}
           style={{
             display: "block",
-            marginBottom: "10px",
+            width: "100%",
+            marginBottom: "15px",
             padding: "10px",
-            width: "300px",
+            borderRadius: "6px",
+            border: "none",
           }}
         />
 
         <button
           onClick={signUp}
           style={{
-            padding: "10px 20px",
+            width: "100%",
+            padding: "10px",
             background: "#1e90ff",
             color: "white",
             border: "none",
-            cursor: "pointer",
             borderRadius: "6px",
+            cursor: "pointer",
           }}
         >
           Crear cuenta
         </button>
       </div>
 
-      {/* MÓDULOS */}
-      <div style={{ marginTop: "60px" }}>
+      {/* 🔹 Módulos */}
+      <div style={{ marginTop: "80px" }}>
         <h2>Módulos disponibles</h2>
 
-        {modules.length === 0 && <p>No hay módulos aún.</p>}
-
-        {modules.map((module) => (
-          <div
-            key={module.id}
-            style={{
-              marginTop: "20px",
-              padding: "20px",
-              background: "#111827",
-              borderRadius: "10px",
-            }}
-          >
-            <h3>{module.title}</h3>
-            <p>{module.description}</p>
-          </div>
-        ))}
+        {modules.length === 0 ? (
+          <p style={{ opacity: 0.6 }}>No hay módulos aún.</p>
+        ) : (
+          modules.map((module) => (
+            <div
+              key={module.id}
+              style={{
+                marginTop: "20px",
+                padding: "25px",
+                background: "#111827",
+                borderRadius: "12px",
+                transition: "0.3s",
+              }}
+            >
+              <h3 style={{ marginBottom: "10px" }}>{module.title}</h3>
+              <p style={{ opacity: 0.7 }}>{module.description}</p>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
